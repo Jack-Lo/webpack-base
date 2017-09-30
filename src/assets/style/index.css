@@ -1,0 +1,17 @@
+body {
+  font-family: monospace;
+  margin: 0;
+  color: #333;
+  padding-top: 100px;
+}
+
+.greet {
+  text-align: center;
+}
+
+.avt {
+  display: block;
+  width: 80px;
+  border-radius: 100%;
+  margin: auto;
+}
