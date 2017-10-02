@@ -1,20 +1,7 @@
-import '@a/style/index.css'
+import '@a/style/index'
+import Welcome from '@/Welcome'
+
 var $greet = document.getElementById('greet')
-
-class Main {
-  constructor (name) {
-    this.name = name
-  }
-
-  greet () {
-    var name = this.name
-    var greeting = `Hello, ${name}!`
-
-    console.log(greeting)
-    return greeting
-  }
-}
-
-var m = new Main('Jack')
+var m = new Welcome('Jack')
 
 $greet.innerHTML = m.greet()
