@@ -1,6 +1,11 @@
+var path = require('path')
 var url = require('url')
 
 module.exports = {
+  alias: {
+    '@': path.resolve(__dirname, '../src'),
+    '@a': path.resolve(__dirname, '../src/assets')
+  },
   build: {
     vendor: [],
     publicPath: './',

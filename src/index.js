@@ -1,4 +1,4 @@
-import '@A/style/index.css'
+import '@a/style/index.css'
 var $greet = document.getElementById('greet')
 
 class Main {

@@ -8,7 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const notifier = require('node-notifier')
 const _ = require('lodash')
 
-const { dev, build } = require('./setting.js')
+const { dev, build, alias } = require('./setting.js')
 
 var entries = {
   index: ['./src/index.js']
@@ -36,6 +36,7 @@ module.exports = (env, argv) => {
     rules: [
       {
         test: /\.js$/,
+        exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader',
@@ -84,10 +85,7 @@ module.exports = (env, argv) => {
   }
 
   var resolve = {
-    alias: {
-      '@': path.resolve(__dirname, '../src'),
-      '@A': path.resolve(__dirname, '../src/assets')
-    }
+    alias
   }
 
   var devtool = prod ? (build.sourceMap ? 'source-map' : false) : 'cheap-module-source-map'
