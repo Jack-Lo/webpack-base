@@ -85,9 +85,7 @@ module.exports = (env, argv) => {
     ]
   }
 
-  var resolve = {
-    alias: setting.alias
-  }
+  var resolve = setting.resolve
 
   var devtool = prod ? (build.sourceMap ? 'source-map' : false) : 'cheap-module-source-map'
 

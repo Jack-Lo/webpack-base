@@ -2,9 +2,14 @@ var path = require('path')
 var url = require('url')
 
 module.exports = {
-  alias: {
-    '@': path.resolve(__dirname, '../src'),
-    '@a': path.resolve(__dirname, '../src/assets')
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../src'),
+      '@a': path.resolve(__dirname, '../src/assets')
+    },
+    extensions: [
+      '.js', '.json', '.css'
+    ]
   },
   build: {
     vendor: [],
@@ -26,6 +31,10 @@ module.exports = {
       // }
     }
   }
+}
+
+function rsv(pathName) {
+  return path.resolve(__dirname, '../src')
 }
 
 function succ(data, msg = 'ok', status = 0) {
