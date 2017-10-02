@@ -36,10 +36,11 @@ npm run build
 
 ## 配置
 
-配置文件为`build/setting.js`，分`dev`与`build`两部分内容：
+配置文件为`build/setting.js`，分`dev`与`build`以及**公共配置**三部分内容：
 
 ```javascript
 {
+  alias: {},
   build: {
     vendor: [],
     publicPath: './',
@@ -76,6 +77,13 @@ mockTable | 假数据配置
 proxyTable参考：[proxy-middleware](https://github.com/gonzalocasas/node-proxy-middleware)
 
 mockTable参考：[expressjs](http://www.expressjs.com.cn/4x/api.html#app.use)
+
+
+### 公共配置
+
+选项 | 含义
+---- | ----
+alias | 路径/模块的别名配置
 
 
 ### 其他
