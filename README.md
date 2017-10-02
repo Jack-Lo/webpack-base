@@ -154,8 +154,6 @@ resolve | 解析模块请求的选项，参考[webpack configuration](https://we
 ## 参考文献
 
 - [webpack官方文档](http://webpack.js.org/)
-- 设计上部分借鉴了[vuejs-templates/webpack](https://github.com/vuejs-templates/webpack)
-
 
 
 
