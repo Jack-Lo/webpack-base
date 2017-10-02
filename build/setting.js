@@ -19,32 +19,11 @@ module.exports = {
   dev: {
     port: 8080,
     nativeNotifier: true,
-    proxyTable: {
-      // '/commonvote': url.parse('https://lzadvertbiz.lizhi.fm/commonvote')
-    },
-    mockTable: {
-      // '/mock': (req, res) => {
-      //   res.json(succ({
-      //     id: 10086,
-      //     name: 'Jack'
-      //   }))
-      // }
-    }
+    proxyTable: {},
+    mockTable: {}
   }
 }
 
 function rsv(pathName) {
   return path.resolve(__dirname, '../src')
-}
-
-function succ(data, msg = 'ok', status = 0) {
-  return {
-    status, data, msg
-  }
-}
-
-function fail(data, msg = 'error', status = 1) {
-  return {
-    status, data, msg
-  }
 }

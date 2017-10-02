@@ -75,9 +75,68 @@ nativeNotifier | 桌面错误提示
 proxyTable | 代理配置
 mockTable | 假数据配置
 
-proxyTable参考：[proxy-middleware](https://github.com/gonzalocasas/node-proxy-middleware)
+**proxyTable**演示：
 
-mockTable参考：[expressjs](http://www.expressjs.com.cn/4x/api.html#app.use)
+```javascript
+var url = require('url')
+var proxyTable = {
+  '/h5': url.parse('https://appweb.lizhi.fm/h5')
+}
+```
+
+配置完毕，重启服务，试着访问[http://localhost:8080/h5/getH5SubscribeList?pageNum=1](http://localhost:8080/h5/getH5SubscribeList?pageNum=1)：
+
+```json
+{
+  "rcode": 6,
+  "msg": "no login",
+  "ret": null,
+  "opt": null
+}
+```
+
+> 参考：[proxy-middleware](https://github.com/gonzalocasas/node-proxy-middleware)
+
+
+**mockTable**演示：
+
+```javascript
+var mockTable = {
+  '/mock': (req, res) => {
+    res.json(succ({
+      id: 10086,
+      name: 'Jack'
+    }))
+  }
+}
+
+function succ(data, msg = 'ok', status = 0) {
+  return {
+    status, data, msg
+  }
+}
+
+function fail(data, msg = 'error', status = 1) {
+  return {
+    status, data, msg
+  }
+}
+```
+
+配置完毕，重启服务，试着访问[http://localhost:8080/mock](http://localhost:8080/mock)：
+
+```json
+{
+  "status": 0,
+  "data": {
+    "id": 10086,
+    "name": "Jack"
+  },
+  "msg": "ok"
+}
+```
+
+> 更完整的内容参考：[expressjs](http://www.expressjs.com.cn/4x/api.html#app.use)
 
 
 ### 公共配置
