@@ -71,6 +71,7 @@ sourceMap | 是否生成sourceMap
 选项 | 含义
 ---- | ----
 port | http服务端口号
+nativeNotifier | 桌面错误提示
 proxyTable | 代理配置
 mockTable | 假数据配置
 
@@ -90,6 +91,11 @@ alias | 路径/模块的别名配置
 
 除了`build/setting.js`之外，开发者还可以手动对webpack的配置进行修改，比如添加`loader`、`plugin`等等，配置文件为`build/config.js`。
 
+
+## 参考文献
+
+- [webpack官方文档](http://webpack.js.org/)
+- 设计上部分借鉴了[vuejs-templates/webpack](https://github.com/vuejs-templates/webpack)
 
 
 

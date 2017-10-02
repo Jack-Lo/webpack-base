@@ -8,7 +8,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const notifier = require('node-notifier')
 const _ = require('lodash')
 
-const { dev, build, alias } = require('./setting.js')
+const setting = require('./setting.js')
+const { dev, build } = setting
 
 var entries = {
   index: ['./src/index.js']
@@ -85,7 +86,7 @@ module.exports = (env, argv) => {
   }
 
   var resolve = {
-    alias
+    alias: setting.alias
   }
 
   var devtool = prod ? (build.sourceMap ? 'source-map' : false) : 'cheap-module-source-map'
@@ -129,6 +130,10 @@ module.exports = (env, argv) => {
         messages: [`You application is running here http://localhost:${dev.port}`]
       },
       onErrors: (severity, errors) => {
+        if (!dev.nativeNotifier) {
+          return
+        }
+        
         if (severity !== 'error') {
           return
         }

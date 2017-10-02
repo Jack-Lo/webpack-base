@@ -13,6 +13,7 @@ module.exports = {
   },
   dev: {
     port: 8080,
+    nativeNotifier: true,
     proxyTable: {
       // '/commonvote': url.parse('https://lzadvertbiz.lizhi.fm/commonvote')
     },
