@@ -84,7 +84,7 @@ mockTable参考：[expressjs](http://www.expressjs.com.cn/4x/api.html#app.use)
 
 选项 | 含义
 ---- | ----
-alias | 路径/模块的别名配置
+resolve | 解析模块请求的选项，参考[webpack configuration](https://webpack.js.org/configuration/resolve/)
 
 
 ### 其他
