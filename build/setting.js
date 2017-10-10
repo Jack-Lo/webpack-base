@@ -2,21 +2,27 @@ var path = require('path')
 var url = require('url')
 
 module.exports = {
+  entries: {
+    index: ['./src/index.js']
+  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '../src'),
-      '@a': path.resolve(__dirname, '../src/assets')
+      '@': rsv('../src'),
+      '@a': rsv('../src/assets')
     },
     extensions: [
       '.js', '.json', '.css'
-    ]
+    ],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   build: {
+    pages: getPages(),
     vendor: [],
     publicPath: './',
     sourceMap: true
   },
   dev: {
+    pages: getPages(true),
     port: 8080,
     nativeNotifier: true,
     proxyTable: {},
@@ -24,6 +30,19 @@ module.exports = {
   }
 }
 
+function getPages(dev) {
+  return {
+    index: {
+      filename: 'index.html',
+      template: 'index.html',
+      inject: true,
+      tplArgs: {
+        title: 'index'
+      }
+    }
+  }
+}
+
 function rsv(pathName) {
-  return path.resolve(__dirname, '../src')
+  return path.resolve(__dirname, pathName)
 }

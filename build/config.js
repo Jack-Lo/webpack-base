@@ -11,21 +11,21 @@ const _ = require('lodash')
 const setting = require('./setting.js')
 const { dev, build } = setting
 
-var entries = {
-  index: ['./src/index.js']
-}
+var entry = setting.entries
 
 module.exports = (env, argv) => {
   var { production: prod } = env
 
   if (prod && build.vendor && build.vendor.length > 0) {
-    entries.vendor = build.vendor
+    entry.vendor = build.vendor
   }
 
-  var entry = prod ? entries : _.mapValues(entries, (o) => {
-    o.unshift('./build/client.js')
-    return o
-  })
+  if (!prod) {
+    entry = _.mapValues(entry, (o) => {
+      o.unshift('./build/client.js')
+      return o
+    })
+  }
 
   var output = {
     filename: prod ? '[name].js?[chunkhash]' : '[name].js',
@@ -80,7 +80,7 @@ module.exports = (env, argv) => {
       },
       {
         test: /\.html$/,
-        use: prod ? ['html-loader'] : ['html-loader', path.resolve(__dirname, './change-loader.js')]
+        use: ['html-loader']
       }
     ]
   }
@@ -89,15 +89,19 @@ module.exports = (env, argv) => {
 
   var devtool = prod ? (build.sourceMap ? 'source-map' : false) : 'cheap-module-source-map'
 
+  var pages = _.map(prod ? build.pages : dev.pages, (o, k) => {
+    if (!o.filename) {
+      o.filename = /\.html$/.test(k) ? k : (k + '.html')
+    }
+
+    return new HtmlWebpackPlugin(o)
+  })
+
   var plugins = prod ? [
     new CleanWebpackPlugin(['dist'], {
       root: path.resolve(__dirname, '..')
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    }),
+    })
+  ].concat(pages, [
     new UglifyJSPlugin({
       sourceMap: !!build.sourceMap
     }),
@@ -116,12 +120,7 @@ module.exports = (env, argv) => {
       filename: 'assets/style/style.css?[contenthash]'
     }),
     new webpack.optimize.ModuleConcatenationPlugin()
-  ] : [
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    }),
+  ]) : pages.concat([
     new webpack.HotModuleReplacementPlugin(),
     new friendlyErrorsPlugin({
       compilationSuccessInfo: {
@@ -145,7 +144,7 @@ module.exports = (env, argv) => {
         })
       }
     })
-  ]
+  ])
 
   return {
     entry,

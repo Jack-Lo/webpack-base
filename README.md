@@ -14,6 +14,7 @@
 5. 文件打包压缩；
 6. 可选的sourcemap；
 7. 集成mock与proxy功能；
+8. 多页面配置；
 
 ...
 
@@ -41,13 +42,29 @@ npm run build
 
 ```javascript
 {
-  alias: {},
+  entries: {
+    index: ['./src/index.js']
+  },
+  resolve: {
+    alias: {
+      '@': rsv('../src'),
+      '@a': rsv('../src/assets')
+    },
+    extensions: [
+      '.js', '.json', '.css'
+    ],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules']
+  },
   build: {
+    pages: {},
     vendor: [],
     publicPath: './',
     sourceMap: true
   },
   dev: {
+    pages: {},
+    port: 8080,
+    nativeNotifier: true,
     proxyTable: {},
     mockTable: {}
   }
@@ -60,6 +77,7 @@ npm run build
 
 选项 | 含义
 ---- | ----
+pages | 支持配置多个页面
 vendor | 公共模块提炼打包，如`jQuery`、`lodash`等
 publicPath | 资源的发布路径，如cdn
 sourceMap | 是否生成sourceMap
@@ -71,6 +89,7 @@ sourceMap | 是否生成sourceMap
 
 选项 | 含义
 ---- | ----
+pages | 支持配置多个页面
 port | http服务端口号
 nativeNotifier | 桌面错误提示
 proxyTable | 代理配置
@@ -140,11 +159,65 @@ function fail(data, msg = 'error', status = 1) {
 > 更完整的内容参考：[expressjs](http://www.expressjs.com.cn/4x/api.html#app.use)
 
 
+**pages**的配置：
+
+多页面功能的实现依赖于插件[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin)，所以配置也跟该插件的配置项对齐：
+
+```javascript
+{
+  pages: {
+    index: { // 以下配置与html-webpack-plugin对齐
+      filename: 'index.html',
+      template: 'index.html',
+      inject: true,
+      title: 'index'
+    }
+  }
+}
+```
+
+稍微有一点不同的是，由于**html-webpack-plugin**与**html-loader**两者同时存在时，出现的一些相互影响，导致前者不能正常使用模板功能，如title的设置，以上的配置项`title`其实不会生效。
+
+针对这一问题，我们对其做了一些功能扩展，使得该模板功能重新生效，为此我们修改了title的传入方式，使用**tplArgs**这一配置项，来包含所有需要注入的参数：
+
+```javascript
+{
+  pages: {
+    index: { // 以下配置与html-webpack-plugin对齐
+      filename: 'index.html',
+      template: 'index.html',
+      inject: true,
+      tplArgs: {
+        title: 'index'
+      }
+    }
+  }
+}
+```
+
+在页面上我们可以这样来使用：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+  ...
+</body>
+</html>
+```
+
+模板引擎使用的是[lodash](https://lodash.com)。
+
+
 ### 公共配置
 
 选项 | 含义
 ---- | ----
-resolve | 解析模块请求的选项，参考[webpack configuration](https://webpack.js.org/configuration/resolve/)
+entries | 入口配置，相当于[entry](https://webpack.js.org/configuration/entry-context/#entry)
+resolve | 解析模块请求的选项，参考[resolve](https://webpack.js.org/configuration/resolve/)
 
 
 ### 其他

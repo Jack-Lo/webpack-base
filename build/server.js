@@ -3,29 +3,49 @@ const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
 const proxyMiddleware = require('proxy-middleware')
+const _ = require('lodash')
 
 const app = express()
 const config = require('./config.js')({production: false})
 const compiler = webpack(config)
 const { dev, build } = require('./setting.js')
 const { port, proxyTable, mockTable } = dev
-const hotMiddleware = webpackHotMiddleware(compiler, {
+var hotMiddleware = null
+var devMiddleware = null
+var htmlCache = {}
+
+compiler.plugin('compilation', function(compilation) {
+  compilation.plugin('html-webpack-plugin-after-html-processing', (data, cb) => {
+    var file = data.outputName
+    var tplArgs = data.plugin.options.tplArgs
+    
+    if (tplArgs) {    
+      data.html = _.template(data.html)(tplArgs)
+    }
+
+    if (htmlCache[file] !== data.html) {
+      hotMiddleware.publish({
+        action: 'reload'
+      })
+
+      htmlCache[file] = data.html
+    }
+
+    cb(null, data)
+  })
+})
+
+hotMiddleware = webpackHotMiddleware(compiler, {
   log: false
 })
-const devMiddleware = webpackDevMiddleware(compiler, {
+
+devMiddleware = webpackDevMiddleware(compiler, {
   quiet: true,
   publicPath: config.output.publicPath,
   stats: {
     chunks: false,
     colors: true
   }
-})
-const lastLoaderSubscribe = require('./change-loader.js').subscribe
-
-lastLoaderSubscribe(() => {
-  hotMiddleware.publish({
-    action: 'change'
-  })
 })
 
 // proxy api requests
@@ -43,7 +63,4 @@ app.use(hotMiddleware)
 
 app.use(devMiddleware)
 
-// Serve the files on port 3000.
-app.listen(port, () => {
-  // console.log(`Server listening on port ${port}!\n`)
-})
+app.listen(port)
