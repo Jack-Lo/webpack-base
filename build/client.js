@@ -1,10 +1,8 @@
 var client = require('webpack-hot-middleware/client?noInfo=true&reload=true')
 
 client.subscribeAll(function(event) {
-  if (event.action === 'change') {
-    setTimeout(() => {
-      window.location.reload()
-    }, 200)
+  if (event.action === 'reload') {
+    window.location.reload()
   }
 })
 
