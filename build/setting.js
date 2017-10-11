@@ -13,7 +13,7 @@ module.exports = {
     extensions: [
       '.js', '.json', '.css'
     ],
-    modules: [path.resolve(__dirname, 'src'), 'node_modules']
+    modules: [rsv('../src'), 'node_modules']
   },
   build: {
     pages: getPages(),
@@ -33,7 +33,7 @@ module.exports = {
 function getPages(dev) {
   return {
     index: {
-      filename: 'index.html',
+      filename: dev ? 'index.html' : rsv('../dist/index.html'),
       template: 'index.html',
       inject: true,
       tplArgs: {

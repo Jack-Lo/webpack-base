@@ -29,7 +29,7 @@ module.exports = (env, argv) => {
 
   var output = {
     filename: prod ? '[name].js?[chunkhash]' : '[name].js',
-    path: path.resolve(__dirname, '../dist'),
+    path: prod ? rsv('../dist/assets') : rsv('../src/assets'),
     publicPath: prod ? build.publicPath : '/'
   }
 
@@ -61,7 +61,7 @@ module.exports = (env, argv) => {
             loader: 'file-loader',
             options: {
               name: prod ? '[path][name].[ext]?[hash]' : '[path][name].[ext]',
-              context: path.resolve(__dirname, '../src')
+              context: rsv('../src')
             }
           }
         ]
@@ -73,7 +73,7 @@ module.exports = (env, argv) => {
             loader: 'file-loader',
             options: {
               name: prod ? '[path][name].[ext]?[hash]' : '[path][name].[ext]',
-              context: path.resolve(__dirname, '../src')
+              context: rsv('../src')
             }
           }
         ]
@@ -99,7 +99,7 @@ module.exports = (env, argv) => {
 
   var plugins = prod ? [
     new CleanWebpackPlugin(['dist'], {
-      root: path.resolve(__dirname, '..')
+      root: rsv('..')
     })
   ].concat(pages, [
     new UglifyJSPlugin({
@@ -117,7 +117,7 @@ module.exports = (env, argv) => {
       name: 'runtime'
     }),
     new ExtractTextPlugin({
-      filename: 'assets/style/style.css?[contenthash]'
+      filename: 'assets/style/[name].css?[contenthash]'
     }),
     new webpack.optimize.ModuleConcatenationPlugin()
   ]) : pages.concat([
@@ -154,4 +154,8 @@ module.exports = (env, argv) => {
     devtool,
     plugins
   }
+}
+
+function rsv(pathName) {
+  return path.resolve(__dirname, pathName)
 }
