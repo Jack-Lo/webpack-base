@@ -1,10 +1,3 @@
-body {
-  font-family: monospace;
-  margin: 0;
-  color: #333;
-  padding-top: 100px;
-}
-
 .greet {
   text-align: center;
 }

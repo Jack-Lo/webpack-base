@@ -33,8 +33,9 @@ module.exports = {
 function getPages(dev) {
   return {
     index: {
-      filename: dev ? 'index.html' : rsv('../dist/index.html'),
+      filename: 'index.html',
       template: 'index.html',
+      chunks: ['runtime', 'vendor', 'index'],
       inject: true,
       tplArgs: {
         title: 'index'

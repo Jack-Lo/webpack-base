@@ -1,3 +1,4 @@
+import '@a/style/common'
 import '@a/style/index'
 import Welcome from '@/Welcome'
 

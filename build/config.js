@@ -12,6 +12,8 @@ const setting = require('./setting.js')
 const { dev, build } = setting
 
 var entry = setting.entries
+var ExtractText = new ExtractTextPlugin('assets/style/[name].css?[contenthash]')
+var CommonExtractText = new ExtractTextPlugin('assets/style/common.css?[contenthash]')
 
 module.exports = (env, argv) => {
   var { production: prod } = env
@@ -29,9 +31,42 @@ module.exports = (env, argv) => {
 
   var output = {
     filename: prod ? '[name].js?[chunkhash]' : '[name].js',
-    path: prod ? rsv('../dist/assets') : rsv('../src/assets'),
+    path: rsv('../dist'),
     publicPath: prod ? build.publicPath : '/'
   }
+
+  var cssRules = prod ? [
+    {
+      test: /\.css$/,
+      exclude: /common\.css/,
+      use: ExtractText.extract({
+        fallback: 'style-loader',
+        use: {
+          loader: 'css-loader',
+          options: {
+            minimize: true
+          }
+        }
+      })
+    },
+    {
+      test: /common\.css$/,
+      use: CommonExtractText.extract({
+        fallback: 'style-loader',
+        use: {
+          loader: 'css-loader',
+          options: {
+            minimize: true
+          }
+        }
+      })
+    }
+  ] : [
+    {
+      test: /\.css$/,
+      use: ['style-loader', 'css-loader']
+    }
+  ]
 
   var module = {
     rules: [
@@ -46,13 +81,6 @@ module.exports = (env, argv) => {
             }
           }
         ]
-      },
-      {
-        test: /\.css$/,
-        use: prod ? ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader'
-        }) : ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
@@ -80,9 +108,16 @@ module.exports = (env, argv) => {
       },
       {
         test: /\.html$/,
-        use: ['html-loader']
+        use: [
+          {
+            loader: 'html-loader',
+            options: {
+              interpolate: true
+            }
+          }
+        ]
       }
-    ]
+    ].concat(cssRules)
   }
 
   var resolve = setting.resolve
@@ -102,9 +137,6 @@ module.exports = (env, argv) => {
       root: rsv('..')
     })
   ].concat(pages, [
-    new UglifyJSPlugin({
-      sourceMap: !!build.sourceMap
-    }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -116,10 +148,12 @@ module.exports = (env, argv) => {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'runtime'
     }),
-    new ExtractTextPlugin({
-      filename: 'assets/style/[name].css?[contenthash]'
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin()
+    CommonExtractText,
+    ExtractText,
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new UglifyJSPlugin({
+      sourceMap: !!build.sourceMap
+    })
   ]) : pages.concat([
     new webpack.HotModuleReplacementPlugin(),
     new friendlyErrorsPlugin({
