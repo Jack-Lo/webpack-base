@@ -239,6 +239,8 @@ resolve | 解析模块请求的选项，参考[resolve](https://webpack.js.org/c
 
 除了`build/setting.js`之外，开发者还可以手动对webpack的配置进行修改，比如添加`loader`、`plugin`等等，配置文件为`build/config.js`。
 
+由于webpack本身并不（特地）对低版本浏览器做兼容，如果需要开发兼容ie8的项目，还需要做一些配置上的工作，请参考[ie8适配指南](doc/ie8.md)。
+
 
 ## 参考文献
 
