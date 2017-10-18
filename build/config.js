@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const friendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const notifier = require('node-notifier')
 const _ = require('lodash')
@@ -22,7 +22,7 @@ module.exports = (env, argv) => {
     entry.vendor = build.vendor
   }
 
-  if (!prod) {
+  if (!prod && dev.hmr) {
     entry = _.mapValues(entry, (o) => {
       o.unshift('./build/client.js')
       return o
@@ -155,8 +155,7 @@ module.exports = (env, argv) => {
       sourceMap: !!build.sourceMap
     })
   ]) : pages.concat([
-    new webpack.HotModuleReplacementPlugin(),
-    new friendlyErrorsPlugin({
+    new FriendlyErrorsPlugin({
       compilationSuccessInfo: {
         messages: [`You application is running here http://localhost:${dev.port}`]
       },
@@ -179,6 +178,10 @@ module.exports = (env, argv) => {
       }
     })
   ])
+
+  if (!prod && dev.hmr) {
+    plugins.push(new webpack.HotModuleReplacementPlugin())
+  }
 
   return {
     entry,

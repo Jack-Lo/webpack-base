@@ -24,6 +24,7 @@ module.exports = {
   dev: {
     pages: getPages(true),
     port: 8080,
+    hmr: true,
     nativeNotifier: true,
     proxyTable: {},
     mockTable: {}
