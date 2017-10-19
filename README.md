@@ -64,6 +64,7 @@ npm run build
   dev: {
     pages: {},
     port: 8080,
+    hmr: true,
     nativeNotifier: true,
     proxyTable: {},
     mockTable: {}
