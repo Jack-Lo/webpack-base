@@ -26,16 +26,14 @@ compiler.run((err, stats) => {
     return
   }
 
-  const info = stats.toJson()
-
   if (stats.hasErrors()) {
-    console.error(info.errors)
+    console.log(stats.toString('errors-only'))
+
     return
   }
 
   if (stats.hasWarnings()) {
-    console.warn(info.warnings)
-    return
+    //
   }
 
   console.log(stats.toString({
