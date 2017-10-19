@@ -22,6 +22,7 @@ module.exports = (env, argv) => {
     entry.vendor = build.vendor
   }
 
+  // hmr配置
   if (!prod && dev.hmr) {
     entry = _.mapValues(entry, (o) => {
       o.unshift('./build/client.js')
@@ -35,6 +36,7 @@ module.exports = (env, argv) => {
     publicPath: prod ? build.publicPath : '/'
   }
 
+  // css在打包的时候提炼公共文件
   var cssRules = prod ? [
     {
       test: /\.css$/,
@@ -112,7 +114,7 @@ module.exports = (env, argv) => {
           {
             loader: 'html-loader',
             options: {
-              interpolate: true
+              interpolate: true // 使得模板支持js语法插入
             }
           }
         ]
@@ -125,6 +127,7 @@ module.exports = (env, argv) => {
   var devtool = prod ? (build.sourceMap ? 'source-map' : false) : 'cheap-module-source-map'
 
   var pages = _.map(prod ? build.pages : dev.pages, (o, k) => {
+    // 默认page的filename为文件名，否则使用key作为文件名
     if (!o.filename) {
       o.filename = /\.html$/.test(k) ? k : (k + '.html')
     }
@@ -148,6 +151,7 @@ module.exports = (env, argv) => {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'runtime'
     }),
+    // 抽离css，并提炼公共css
     CommonExtractText,
     ExtractText,
     new webpack.optimize.ModuleConcatenationPlugin(),
@@ -179,6 +183,7 @@ module.exports = (env, argv) => {
     })
   ])
 
+  // 添加hmr所需的plugin
   if (!prod && dev.hmr) {
     plugins.push(new webpack.HotModuleReplacementPlugin())
   }
