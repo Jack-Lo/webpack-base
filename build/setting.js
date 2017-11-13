@@ -1,5 +1,5 @@
 var path = require('path')
-var url = require('url')
+var { proxyMap, mockMap } = require('./data.js')
 
 module.exports = {
   entries: {
@@ -26,23 +26,23 @@ module.exports = {
     port: 8080,
     hmr: true,
     nativeNotifier: true,
-    proxyTable: {},
-    mockTable: {}
+    proxyMap,
+    mockMap
   }
 }
 
 function getPages(dev) {
-  return {
-    index: {
+  return [
+    {
       filename: 'index.html',
       template: 'index.html',
-      chunks: ['runtime', 'vendor', 'index'],
+      chunks: ['manifest', 'vendor', 'index'],
       inject: true,
       tplArgs: {
         title: 'index'
       }
     }
-  }
+  ]
 }
 
 function rsv(pathName) {

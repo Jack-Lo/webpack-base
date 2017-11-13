@@ -66,8 +66,8 @@ npm run build
     port: 8080,
     hmr: true,
     nativeNotifier: true,
-    proxyTable: {},
-    mockTable: {}
+    proxyMap: {},
+    mockMap: {}
   }
 }
 ```
@@ -94,18 +94,18 @@ pages | 支持配置多个页面
 port | http服务端口号
 hmr | 模块热更新
 nativeNotifier | 桌面错误提示
-proxyTable | 代理配置
-mockTable | 假数据配置
+proxyMap | 代理配置
+mockMap | 假数据配置
 
 
 > **hmr**默认为`true`，即默认开启，启用此功能时，源码会注入`./build/client.js`文件，而这个文件包含了实现热更新所需要的`websocket`功能，对于不支持`websocket`的客户端（如ie8）来说，此项功能会导致页面报错，从而无法正常进行调试，为了解决这个问题，我们将这个功能提取到配置项当中，并建议在低版本浏览器下调试的时候关闭此功能，以确保开发工作正常进行，当然，这样一来你可能需要在修改了代码之后，手动刷新页面。
 
 
-**proxyTable**演示：
+**proxyMap**演示：
 
 ```javascript
 var url = require('url')
-var proxyTable = {
+var proxyMap = {
   '/h5': url.parse('https://appweb.lizhi.fm/h5')
 }
 ```
@@ -124,10 +124,10 @@ var proxyTable = {
 > 参考：[proxy-middleware](https://github.com/gonzalocasas/node-proxy-middleware)
 
 
-**mockTable**演示：
+**mockMap**演示：
 
 ```javascript
-var mockTable = {
+var mockMap = {
   '/mock': (req, res) => {
     res.json(succ({
       id: 10086,
@@ -171,15 +171,17 @@ function fail(data, msg = 'error', status = 1) {
 
 ```javascript
 {
-  pages: {
-    index: { // 以下配置与html-webpack-plugin对齐
+  pages: [
+    { // 以下配置与html-webpack-plugin对齐
       filename: 'index.html',
       template: 'index.html',
       chunks: ['runtime', 'vendor', 'index'],
       inject: true,
-      title: 'index'
+      tplArgs: {
+        title: 'index'
+      }
     }
-  }
+  ]
 }
 ```
 
@@ -189,8 +191,8 @@ function fail(data, msg = 'error', status = 1) {
 
 ```javascript
 {
-  pages: {
-    index: { // 以下配置与html-webpack-plugin对齐
+  pages: [
+    { // 以下配置与html-webpack-plugin对齐
       filename: 'index.html',
       template: 'index.html',
       chunks: ['runtime', 'vendor', 'index'],
@@ -199,7 +201,7 @@ function fail(data, msg = 'error', status = 1) {
         title: 'index'
       }
     }
-  }
+  ]
 }
 ```
 

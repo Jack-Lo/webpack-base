@@ -13,7 +13,6 @@ const { dev, build } = setting
 
 var entry = setting.entries
 var ExtractText = new ExtractTextPlugin('assets/style/[name].css?[contenthash]')
-var CommonExtractText = new ExtractTextPlugin('assets/style/common.css?[contenthash]')
 
 module.exports = (env, argv) => {
   var { production: prod } = env
@@ -36,25 +35,10 @@ module.exports = (env, argv) => {
     publicPath: prod ? build.publicPath : '/'
   }
 
-  // css在打包的时候提炼公共文件
   var cssRules = prod ? [
     {
       test: /\.css$/,
-      exclude: /common\.css/,
       use: ExtractText.extract({
-        fallback: 'style-loader',
-        use: {
-          loader: 'css-loader',
-          options: {
-            minimize: true,
-            sourceMap: true
-          }
-        }
-      })
-    },
-    {
-      test: /common\.css$/,
-      use: CommonExtractText.extract({
         fallback: 'style-loader',
         use: {
           loader: 'css-loader',
@@ -128,14 +112,7 @@ module.exports = (env, argv) => {
 
   var devtool = prod ? (build.sourceMap ? 'source-map' : false) : 'cheap-module-source-map'
 
-  var pages = _.map(prod ? build.pages : dev.pages, (o, k) => {
-    // 默认page的filename为文件名，否则使用key作为文件名
-    if (!o.filename) {
-      o.filename = /\.html$/.test(k) ? k : (k + '.html')
-    }
-
-    return new HtmlWebpackPlugin(o)
-  })
+  var pages = (prod ? build.pages : dev.pages).map((o, k) => new HtmlWebpackPlugin(o))
 
   var plugins = prod ? [
     new CleanWebpackPlugin(['dist'], {
@@ -148,13 +125,12 @@ module.exports = (env, argv) => {
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor'
+      name: 'vendor',
+      minChunks: Infinity
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'runtime'
+      name: 'manifest'
     }),
-    // 抽离css，并提炼公共css
-    CommonExtractText,
     ExtractText,
     new webpack.optimize.ModuleConcatenationPlugin(),
     new UglifyJSPlugin({

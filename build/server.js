@@ -9,7 +9,7 @@ const app = express()
 const config = require('./config.js')({production: false})
 const compiler = webpack(config)
 const { dev, build } = require('./setting.js')
-const { port, proxyTable, mockTable } = dev
+const { port, proxyMap, mockMap } = dev
 var hotMiddleware = null
 var devMiddleware = null
 var htmlCache = {}
@@ -49,14 +49,14 @@ devMiddleware = webpackDevMiddleware(compiler, {
 })
 
 // proxy api requests
-Object.keys(proxyTable).forEach((context) => {
-  var options = proxyTable[context]
+Object.keys(proxyMap).forEach((context) => {
+  var options = proxyMap[context]
   app.use(context, proxyMiddleware(options))
 })
 
 // mock api requests
-Object.keys(mockTable).forEach((context) => {
-  app.use(context, mockTable[context])
+Object.keys(mockMap).forEach((context) => {
+  app.use(context, mockMap[context])
 })
 
 app.use(hotMiddleware)
