@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node build/server.js",
     "build": "node build/prod.js",
+    "static": "node build/static.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jack Lo",
