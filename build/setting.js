@@ -18,7 +18,7 @@ module.exports = {
   build: {
     pages: getPages(),
     vendor: [],
-    publicPath: './',
+    publicPath: '/',
     sourceMap: true
   },
   dev: {
