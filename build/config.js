@@ -74,10 +74,11 @@ module.exports = (env, argv) => {
         test: /\.(png|svg|jpg|gif)$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: 'url-loader',
             options: {
               name: prod ? '[path][name].[ext]?[hash]' : '[path][name].[ext]',
-              context: rsv('../src')
+              context: rsv('../src'),
+              limit: 10000
             }
           }
         ]
@@ -86,10 +87,11 @@ module.exports = (env, argv) => {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: 'url-loader',
             options: {
               name: prod ? '[path][name].[ext]?[hash]' : '[path][name].[ext]',
-              context: rsv('../src')
+              context: rsv('../src'),
+              limit: 10000
             }
           }
         ]
